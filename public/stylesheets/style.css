@@ -1,0 +1,15 @@
+body {
+  padding: 0;
+  margin: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+button {
+  padding: 8px 10px;
+  background-color: rgb(35, 68, 214);
+  border-color: rgb(35, 68, 214);
+  color: white;
+  border-radius: .25rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
