@@ -1,9 +1,11 @@
 extends layout
 
 block content
+    p#videoID(style="display:none")=id
     iframe(id="player"
         width="640" height="360"
-        src=`${url}?enablejsapi=1`
+        src=`${url}?enablejsapi=1&origin=http://localhost:5000`
+        type="text/html"
         frameborder="0"
         style="border: solid 4px #37474F"
     )
@@ -19,22 +21,31 @@ block content
         function onYouTubeIframeAPIReady() {
             var player;
             player = new YT.Player('player', {
-                playerVars: { 'controls': 0 },
                 events: {
                     'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError
+                    'onStateChange': onPlayerStateChange
                 }
             });
         }
 
+        var startTime;
         function onPlayerReady(event){
             event.target.setVolume(10);
             event.target.playVideo();
+            //- fetch(`/api/v1/advert/start?currentTime=${startTime}`)
         }
         function onPlayerStateChange(event){
-            console.log(event);
-        }
-        function onPlayerError(event){
-
+            if(event.data === 1){
+                startTime = new Date().getTime();
+            }
+            // 0: video finished playing
+            if(event.data === 0){
+                fetch(`http://localhost:5000/api/v1/advert/end`, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({userID: "cm_pub_etvxuw901wq8h8rg",
+                                            previousTime: startTime,
+                                            videoID: document.getElementById("videoID").innerHTML})
+                }).then(r => console.log(r));
+            }
         }
