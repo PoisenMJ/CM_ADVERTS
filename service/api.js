@@ -1,5 +1,3 @@
-var crypto = require('crypto');
-var Secp256k1 = require('@enumatech/secp256k1-js');
 const { COINMODE_URI } = require('../util/CONSTANTS');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
@@ -46,6 +44,7 @@ async function transferFundsRequest(_play_token, _to_type, _payment_amount, _use
         body: jsonPayload
     });
     var json = await res.json();
+    console.log(json);
     if(json.hasOwnProperty("status")){
         if(json.status === "ok") return json.payment_pending_id;
         else return new Error("Failed");
@@ -70,7 +69,42 @@ async function transferFundsVerify(_play_token, _pending_payment_id){
     }
 }
 
+// POST: GET USER PLAY TOKEN
+async function playTokensRequest(_user_email, _title_id){
+    var jsonPayload = JSON.stringify({
+        player_uuid_or_email: _user_email,
+        title_id: _title_id
+    });
+    var res = await fetch(`${COINMODE_URI}/v1/players/playtokens/request`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: jsonPayload
+    });
+    var json = await res.json();
+    console.log(json);
+    return json;
+}
+
+// POST: VERIFY USER PLAY TOKEN
+async function playTokensVerify(_play_token){
+    var jsonPayload = JSON.stringify({ play_token: _play_token });
+    var res = await fetch(`${COINMODE_URI}/v1/players/playtokens/verify`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: jsonPayload
+    });
+    var json = await res.json();
+    console.log(json);
+    return json;
+}
+
+// TRANSFER FUNDS ROUTES
 module.exports.transferFundsGetFees = transferFundsGetFees;
 module.exports.transferFundsRequest = transferFundsRequest;
 module.exports.transferFundsVerify = transferFundsVerify;
+
+// PLAYER TOKENS ROUTES
+module.exports.playTokensRequest = playTokensRequest;
+module.exports.playTokensVerify = playTokensVerify;
+
 module.exports.getAdvert = getAdvert;
