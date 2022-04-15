@@ -33,6 +33,7 @@ async function transferFundsRequest(_play_token, _to_type, _payment_amount, _use
         play_token: _play_token,
         to_type: _to_type,
         to: _user_id,
+        wallet: "gbpx_main",
         amount: _payment_amount,
         description_for_sender: "ADVERT",
         description_for_reciever: "MONEY FOR WATCHING ADVERT",

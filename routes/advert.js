@@ -1,5 +1,5 @@
 var express = require('express');
-const { transferFundsGetFees, transferFundsRequest, transferFundsVerify, finishAdvert } = require('../service/api');
+const { transferFundsGetFees, transferFundsRequest, transferFundsVerify, finishAdvert, playTokensRequest } = require('../service/api');
 var router = express.Router();
 const { VIDEOS } = require('../util/VIDEOS');
 
@@ -27,15 +27,14 @@ router.post('/end', async (req, res, next) => {
             previousTime: previous_time,
             videoID: video_id} = req.body;
     var current_time = new Date().getTime();
-    console.log(req.body);
     var video_duration = VIDEOS[video_id].duration;
 
     // successfully watched whole ad
     if( (current_time - previous_time + 2) > video_duration ){
         var payment_amount = VIDEOS[video_id].amount;
         try {
-            await transferFundsGetFees(process.env.play_token, 'player_id', payment_amount, user_id);
-            var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, user_id);
+            // await transferFundsGetFees(process.env.play_token, 'player_id', payment_amount, user_id);
+            var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, "cm_pub_dtx1a97srmh2uwe6");
             await transferFundsVerify(process.env.play_token, pending_payment_id);
             console.log('finished and sent money');
             res.send("DONE");
