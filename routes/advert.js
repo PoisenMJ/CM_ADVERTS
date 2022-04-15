@@ -33,16 +33,16 @@ router.post('/end', async (req, res, next) => {
     if( (current_time - previous_time + 2) > video_duration ){
         var payment_amount = VIDEOS[video_id].amount;
         try {
-            // await transferFundsGetFees(process.env.play_token, 'player_id', payment_amount, user_id);
             var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, "cm_pub_dtx1a97srmh2uwe6");
             await transferFundsVerify(process.env.play_token, pending_payment_id);
-            console.log('finished and sent money');
             res.send("DONE");
         } catch(err) {
-            console.log("ERROR:");
             console.log(err);
             res.send("ERROR");
         }
+    } else {
+        console.log("cheated");
+        res.send("CHEAT");
     }
 });
 

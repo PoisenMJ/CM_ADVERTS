@@ -47,9 +47,9 @@ async function transferFundsRequest(_play_token, _to_type, _payment_amount, _use
     var json = await res.json();
     console.log(json);
     if(json.hasOwnProperty("status")){
-        if(json.status === "ok") return json.payment_pending_id;
-        else return new Error("Failed");
-    } else return new Error("Request Incorrect");
+        if(json.status === "ok") return json.pending_payment_id;
+        else throw new Error("Failed");
+    } else throw new Error("Request Incorrect");
 }
 
 // POST: TRANSFER FUNDS VERIFY
@@ -64,6 +64,8 @@ async function transferFundsVerify(_play_token, _pending_payment_id){
         body: jsonPayload
     });
     var json = await res.json();
+    console.log("verify");
+    console.log(json);
     if(json.hasOwnProperty("status")){
         if(json.status === "ok") return true;
         else return new Error("Funds Verify Failed");
