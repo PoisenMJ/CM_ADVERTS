@@ -4,7 +4,6 @@ var router = express.Router();
 const { VIDEOS } = require('../util/VIDEOS');
 
 router.get('/request', (req, res, next) => {
-    console.log(req.headers);
     let user_id = req.query.userID;
     // logic for getting video -> return: video id, amount
     // possible logic if same video as watched last time
@@ -37,7 +36,7 @@ router.post('/end', async (req, res, next) => {
     if( (current_time - previous_time + 50) > video_duration || (elapsed_time + 50) >= video_duration ){
         var payment_amount = VIDEOS[video_id].amount;
         try {
-            var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, "cm_pub_dtx1a97srmh2uwe6");
+            var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, user_id);
             await transferFundsVerify(process.env.play_token, pending_payment_id);
             res.send("DONE");
         } catch(err) {

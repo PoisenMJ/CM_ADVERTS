@@ -11,6 +11,7 @@ block content
     )
 
     script(type="text/javascript").
+        const TEST_USER_ID = "cm_pub_dtx1a97srmh2uwe6";
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -49,7 +50,7 @@ block content
                 fetch(`http://localhost:5000/api/v1/advert/end`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({userID: "cm_pub_etvxuw901wq8h8rg",
+                    body: JSON.stringify({userID: TEST_USER_ID,
                                             previousTime: startTime,
                                             elapsedTime: elapsedTime,
                                             videoID: document.getElementById("videoID").innerHTML})
