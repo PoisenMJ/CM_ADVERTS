@@ -28,14 +28,21 @@ block content
             });
         }
 
-        var startTime;
+        var startTime, elapsedStartTime;
+        var elapsedTime = 0;
         function onPlayerReady(event){
             event.target.setVolume(10);
             event.target.playVideo();
         }
         function onPlayerStateChange(event){
+            // 1: video play
+            // 2: video paused
             if(event.data === 1){
-                startTime = new Date().getTime();
+                var d = new Date().getTime();
+                startTime = d;
+                elapsedStartTime = d;
+            } else if(event.data === 2){
+                elapsedTime += (newDate().getTime() - elapsedStartTime);
             }
             // 0: video finished playing
             if(event.data === 0){
@@ -44,6 +51,7 @@ block content
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({userID: "cm_pub_etvxuw901wq8h8rg",
                                             previousTime: startTime,
+                                            elapsedTime: elapsedTime,
                                             videoID: document.getElementById("videoID").innerHTML})
                 }).then(r => console.log(r));
             }
