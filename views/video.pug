@@ -4,7 +4,7 @@ block content
     p#videoID(style="display:none")=id
     iframe(id="player"
         width="640" height="360"
-        src=`${url}?enablejsapi=1&origin=http://localhost:5000&controls=0`
+        src=`${url}?enablejsapi=1&origin=http://localhost:5000&controls=0&autoplay=1&mute=1`
         type="text/html"
         frameborder="0"
         style="border: solid 4px #37474F"
@@ -29,8 +29,6 @@ block content
             });
         }
 
-        var startTime, elapsedStartTime;
-        var elapsedTime = 0;
         function onPlayerReady(event){
             event.target.setVolume(10);
             event.target.playVideo();
@@ -38,21 +36,12 @@ block content
         function onPlayerStateChange(event){
             // 1: video play
             // 2: video paused
-            if(event.data === 1){
-                var d = new Date().getTime();
-                startTime = d;
-                elapsedStartTime = d;
-            } else if(event.data === 2){
-                elapsedTime += (newDate().getTime() - elapsedStartTime);
-            }
             // 0: video finished playing
             if(event.data === 0){
                 fetch(`http://localhost:5000/api/v1/advert/end`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({userID: TEST_USER_ID,
-                                            previousTime: startTime,
-                                            elapsedTime: elapsedTime,
                                             videoID: document.getElementById("videoID").innerHTML})
                 }).then(r => console.log(r));
             }

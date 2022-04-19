@@ -18,22 +18,20 @@ router.get('/request', (req, res, next) => {
     });
 });
 
-router.post('/end', async (req, res, next) => {
+router.post('/end', async (req, res) => {
     // send finish advert request
     // if fail check 2 more times (possible solution but request times could make this innacurate)
     // add 1-2 secs after time to account for delay etc.
+    console.log(req.session.startTime);
     var { userID: user_id,
-            previousTime: previous_time,
-            elapsedTime: elapsed_time,
             videoID: video_id
     } = req.body;
     var current_time = new Date().getTime();
     var video_duration = VIDEOS[video_id].duration;
 
-    // successfully watched whole ad
-    // if either elapsed time (video has been stopped and started)
-    // or watched whole thing at once
-    if( (current_time - previous_time + 50) > video_duration || (elapsed_time + 50) >= video_duration ){
+    // if token saved when video is sent storing current time
+    // minus current time is greater or equal to  video length then its valid
+    if( (current_time - req.session.startTime) >= video_duration ){
         var payment_amount = VIDEOS[video_id].amount;
         try {
             var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, user_id);
