@@ -1,6 +1,7 @@
-var express = require('express');
-const { transferFundsGetFees, transferFundsRequest, transferFundsVerify, finishAdvert, playTokensRequest } = require('../service/api');
-var router = express.Router();
+const express = require('express');
+const Payment = require('../models/payment');
+const { transferFundsRequest, transferFundsVerify } = require('../service/api');
+const router = express.Router();
 const { VIDEOS } = require('../util/VIDEOS');
 
 router.get('/request', (req, res, next) => {
@@ -23,9 +24,7 @@ router.post('/end', async (req, res) => {
     // if fail check 2 more times (possible solution but request times could make this innacurate)
     // add 1-2 secs after time to account for delay etc.
     console.log(req.session.startTime);
-    var { userID: user_id,
-            videoID: video_id
-    } = req.body;
+    var { userID: user_id, videoID: video_id } = req.body;
     var current_time = new Date().getTime();
     var video_duration = VIDEOS[video_id].duration;
 
@@ -36,10 +35,15 @@ router.post('/end', async (req, res) => {
         try {
             var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, user_id);
             await transferFundsVerify(process.env.play_token, pending_payment_id);
-            res.send("DONE");
+            var new_payment = new Payment({
+                user_id,
+                amount: payment_amount
+            });
+            await new_payment.save();
+            return res.json({ success: true });
         } catch(err) {
             console.log(err);
-            res.send("ERROR");
+            res.send({ success: false });
         }
     } else {
         console.log("cheated");

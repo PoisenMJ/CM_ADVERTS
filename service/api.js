@@ -7,6 +7,12 @@ async function getAdvert(_user_id){
     return json;
 }
 
+async function getUserMetrics(_user_id){
+    var res = await fetch(`http://localhost:5000/api/v1/metrics/adverts/${_user_id}`);
+    var json = await res.json();
+    return json;
+}
+
 // POST: TRANSFER FUNDS GET FEES
 async function transferFundsGetFees(_play_token, _to_type, _payment_amount, _user_id){
     var jsonPayload = JSON.stringify({
@@ -111,3 +117,4 @@ module.exports.playTokensRequest = playTokensRequest;
 module.exports.playTokensVerify = playTokensVerify;
 
 module.exports.getAdvert = getAdvert;
+module.exports.getUserMetrics = getUserMetrics;

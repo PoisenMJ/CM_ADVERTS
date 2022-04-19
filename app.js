@@ -1,8 +1,12 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var session = require('express-session');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const session = require('express-session');
 
+// initialize database
+require('./models');
+
+// import routers
 var indexRouter = require('./routes/index');
 var advertRouter = require('./routes/advert');
 
