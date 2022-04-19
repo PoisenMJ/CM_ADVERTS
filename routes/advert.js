@@ -33,8 +33,8 @@ router.post('/end', async (req, res) => {
     if( (current_time - req.session.startTime) >= video_duration ){
         var payment_amount = VIDEOS[video_id].amount;
         try {
-            var pending_payment_id = await transferFundsRequest(process.env.play_token, 'player_id', payment_amount, user_id);
-            await transferFundsVerify(process.env.play_token, pending_payment_id);
+            var pending_payment_id = await transferFundsRequest(process.env.PLAY_TOKEN, 'player_id', payment_amount, user_id);
+            await transferFundsVerify(process.env.PLAY_TOKEN, pending_payment_id);
             var new_payment = new Payment({
                 user_id,
                 amount: payment_amount
